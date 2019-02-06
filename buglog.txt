@@ -1,0 +1,260 @@
+0__This bug log is sorted by date. Almost all entries were made on Friday/Saturday/Sunday (the evenings, around 6pm, our group met and worked on our separate branches), and represent the bugs found that day or talked about in the days before, and solved by the end of the working session (usually around midnight). This buglog also stood place as a sort of accountability check, that told all other members what that person had actually productively accomplished that day.
+
+0__Bugs are listed in the following format: [bug 1]. also, [bug 2]
+Solutions are listed in the following format: [bug1 solution status]: (possible) bug 1 solution. also, [bug2 solution status]: (possible) bug 2 solution.
+________________________
+MP3 BEGINS: Sunday 10/14
+________________________
+
+Who: Jusung
+What: system freezing after boot, unable to display or testprint, but system doesn’t seem to crash or throw any exceptions
+When: Friday 10/19
+How: idt loaded as gdt, pointers were swapped around. made headers in x86_desc.S more clear and representative of the values they hold
+
+Who: Simon
+What: rtc init values freezing entire system, typing verified by dhruv but not displaying whatsoever
+When: Friday 10/19
+How: improper port number and no eoi sent, devos code fixed solution and explained how improper port or data values would sieze computation at first rtc interrupt
+
+Who: David
+What: system crashes before boot sequence enters kernel, no visual feedback or any responsiveness whatsoever
+When: Friday 10/19
+How: typo, lgdt mispelled. also, corrected deleted ljump on line 28 by reverting file from gitlab. accidentally deleted while moving around lidt lines
+
+Who: Dhruv
+What: values not printf’ing properly, showing up as strange windings or box style characters. also, extraneous keys are printing out seemingly random letters and numbers
+When: Friday 10/19
+How: fixed values printf’ing improperly - was due to using incorrect scancode table, but extraneous keys still printing out seemingly random letters and numbers, like everything non-alphanumeric qwerty normal homerow based keys
+
+Who: Jusung
+What: paging virtualization test function causes os to crash, dereferencing null pointer seems to seize system
+When: Saturday 10/20
+How: solution not resolved
+
+Who: David
+What: looked over idt array, insertion calls are mapping to other interrupts. like, rtc interrupt triggers a different page exception
+When: Saturday 10/20
+How: solution not resolved
+
+Who: Dhruv
+What: changed idt entries to represent the trap vectors assigned in the book, but other interrupts freeze now. also, keyboard inputs still causing random values
+When: Saturday 10/20
+How: trap vectors selected were shifted off by one, so all interrupts either froze or mapped to other interrupts, this is why paging and rtc were freezing. modified idt.c and idt.h ~2-25. also, wrapped entire keyboard ascii loads from table in an if statement to ignore releasing and irrelevant 3.1 scan ranges
+
+Who: Jusung
+What: null pointer dereferencing test still not triggering exception correctly, values freeze system. also, looked at strange keyboard behaivour with dhruv
+When: Sunday 10/21
+How: solution not resolved: modified paging test to more clearly dereference poitner. also, fixed keyboard with Dhruv and began tlb flushing for 3.2 by extended gcc asm linkage
+
+Who: Simon
+What: kernel crashing. also, rtc begins at a very slow speed
+When: Sunday 10/21
+How: solution not resolved: kernel crashing. also, changed init multiplication to represent correct evaluation of 1024 ticking
+
+Who: David
+What: skeleton assembly linkage for every interrupt and exception in idt cause crashes when invoked. also, incorrect keyboard values still processed
+When: Sunday 10/21
+How: solution not resolved: skeleton assembly linkage causing crashes. also, keyboard values pass null/error checking before processing through ascii translate.
+
+Who: Simon
+What: kernel crashes...
+When: Monday 10/22
+How: flanked interrupt handler with cli and sti, not noticed were missing before
+
+Who: David
+What: warnings and code not commented
+When: Monday 10/22
+How: removed unnecessary variables from bottom of kernel.c and copied around comment interfaces to provide missing description and I/O for each function in paging and rtc.
+
+_________________________
+3.1 DEADLINE MONDAY 10/22
+_________________________
+
+Who: Jusung
+What: paging dereferencing null pointer still not causing expected result, just crashing
+When: Friday 10/26
+How: Solved: paging allocation of .val was incorrect in second function of paging.c, modified to correctly calculate physical page to translate back to .addr easier. It turns out to be that the page directory entry was not changing bit for 4MB page, and fixed the problem.
+
+Who: Simon
+What: rtc_init causing freezes again
+When: Friday 10/26
+How: rtc_open being called from rtc_write for wsome reason, fixed by referencing devos code to seperate the two’s functionality
+
+Who: David
+What: filesystem initialization not correctly setting calculation loop stride, and read is skipping blocks while debug printf
+When: Friday 10/26
+How: changed initialization values in .h file, reformatted calculation of inblock stride at 67, and began new filesystem test for verylongname file in tests.c
+
+Who: Jusung
+What: scroll_up function causing system-wide crashes
+When: Saturday 10/27
+How: added address referencing to pass by a buffer value from .h instead of reinstancing local value of video memory every time, and made it static so we wouldn’t write into restricted memory and crash system anymore
+
+Who: Dhruv
+What: terminal write causing segfault-like error it seems
+When: Saturday 10/27
+How: buffer passed in wasn’t being null checked correctly, and ended up being written into at negative indicies due to how our loop structure worked 76
+
+Who: Simon
+What: CtrlL flag not working, global flag not being received by terminal
+When: Sunday 10/28
+How: CtrlL flag was not reinitialized as local value from within faile, and terminal had misspellings within its reception of the variable.
+
+Who: David
+What: file system crashing with large files
+When: Sunday 10/28
+How: scanblock loop terminating condition extended to end of length of file and processing switched to now base off of inode length instead of read block length
+
+Who: Dhruv
+What: garbage testing values causing compiler warnings, and page ending enters causing compiler warnings
+When: Sunday 10/28
+How: testing values deleted, page endings added, and comments set further set for keyboard handler
+
+Who: Dhruv
+What: extraneous garbage values and some inline comments missing
+When: Monday 10/29
+How: unused variables compiler warnings cleared up, missing “file terminating carriage return” warning cleared up, and inline comments in rtc_write and all over keyboard were filled in
+
+_________________________
+3.2 DEADLINE MONDAY 10/29
+_________________________
+
+Who: Jusung
+What: syscall 4 and 6 returning FAIL!
+When: Friday 11/09
+How: solution not resolved: 4 and 6 retruning fail, must be an issue with error checking in filesystem somewhere
+
+Who: Simon
+What: execute not processing arguments correctly. also, halt not returning to correct spot
+When: Friday 11/09
+How: solution not resolved: execute not working
+
+Who: David
+What: execute not working at all
+When: Friday 11/09
+How: solution not resolved: execute not working
+
+Who: Dhruv
+What: assembly syscalls linkage not preserving eax return value
+When: Friday 11/09
+How: eax return value correctly passed back 209 and infinite looping within linkage due to jump condition error resolved.
+
+Who: Simon
+What: execute not processing arguments correctly. also, halt not returning to correct spot
+When: Saturday 11/10
+How: tss.esp0 fixed by reassigning linkage 228, pcb structs switched around to avoid holding unnecessary values 44, paging values for pcb storing moved back around to previous destination to solidify kernel pages 102, null checks moved to top of function 108, loader loop terminators switched around 135, exe check streamlined 154, fops and fd structs changed to represent real values 56, pcb_t renamed and holds buffers themselves for 3.5 implementation later on 59, halt extended asm reconfigured with correct syntax 71, context switching replaced with more robust for 3.5 implementation 258
+
+Who: David
+What: execute not working at all
+When: Saturday 11/10
+How: ebp values reinitialized 207, new function created get_pcb to assist in which pcb is active at a certain memory location 31, certain pointers abstracted to file scope 27, retrain how eflags and dummy values are pushed in extended asm for halt 42
+
+Who: Jusung
+What: syserr 9 and 10 fail
+When: Sunday 11/11
+How: issue was with inblock fs processing 99 and terminal null checking 143, both fixed and now both work
+
+Who: Simon
+What: comments for execute missing and causing crashes
+When: Sunday 11/11
+How: moved around comments and stuff
+
+Who: David    
+What: os does not properly squash os-freezing exceptions and return control to keyboard
+When: Sunday 11/11
+How: catches pagefault and /0 exceptions in handler for those exceptions, correctly resaving stack at asm linkage ~40+ and returning control to execute process
+
+Who: Simon
+What: executes loader completely uncommented and causes crashes with files larger than 5 lines
+When: Monday 11/12
+How: changed loader to limitless reading as per filesystem description, and better commenting throughout execute
+
+Who: David
+What: filesystem poorly commented, and stride for block-to-block not finishing at proper segment - ie some files print more blankspace afterward
+When: Monday 11/12
+How: filesystem perfectly commented inline and function-specific interfaces. also, solution not resolved: temporary fix for certain files by chopping off specific printing after inode number reached.
+
+Who: Dhruv
+What: extraneous garbage values and some inline comments missing
+When: Monday 10/29
+How: unused variables compiler warnings cleared up, missing “file terminating carriage return” warning cleared up, and inline comments in rtc_write and all over keyboard were filled i
+_________________________
+3.3 DEADLINE MONDAY 11/12
+_________________________
+
+Who: David
+What: ls freezing after printing
+When: Friday 12/07
+How: changed values in halt that somehow got changed back, shells and multiple shells close correctly now
+_________________________________
+Thanksgiving Begins: Sunday 11/18
+_____________________________________
+
+Who: Dhruv
+What: pingpong doesn’t scroll up properly
+When: Wednesday 11/21
+How: resolved with Simon
+
+Who: Simon
+What: scroll misbehaving
+When: Saturday 11/24
+How: scroll up changed to dynamically change with cursor position instead of direct address, basically computation moved to a more centralized function in lib.c instead of client-side every time.
+_________________________________
+Thanksgiving Ends: Saturday 11/24
+_________________________________
+__________________________
+3.4 DEADLINE TUESDAY 11/27
+__________________________
+
+Who: Jusung
+What: overflow from one keyboard buffer showing on another terminal
+When: Friday 12/07
+How: changed putc_addr to more correctly handle overflow and terminal_num_display specificity 213
+
+Who: Dhruv
+What: keyboard printing random values for F1 F2 F3 and it works with capslock when pressed instead of just alt
+When: Friday 12/07
+How: if statement changed to disallow f1 f2 and f3 if alt isn’t pressed. if alt is pressed, disable ascii substitution and just raise flag
+
+Who: Simon
+What: swap_terminals and new paging construct causing freezes and crashes erratically
+When: Saturday 12/08
+How: changed new paging and swap_terminals functions to work based off of termina_num values instead of termina_num_display values, and realigned their tss values accordingly 96
+
+Who: David
+What: cursor persists across terminal swaps
+When: Saturday 12/08
+How: swap_terminals and corresponding accessor functionality in pit no longer resets cursor position unnecessarily
+
+Who: Simon
+What: videomem crashing
+When: Sunday 12/09
+How: reformulated calculations on how to manipulate video memory physical address space, and further commented and swapped around terminal swapping values from within setup_virtual_to_video for tid values
+
+Who: David
+What: pcb buffers freeze when trying to access cursor_y values from different terminal - ie when num_display isnt _display
+When: Sunday 12/09
+How: pcb_t renamed and holds buffers themselves for implementation 59, halt extended asm reconfigured with correct syntax 71, context switching replaced with more robust implementation 258
+
+Who: Jusung
+What: cursor position at ctrl l executing 0,0 on all terminals
+When: Monday 12/10
+How: instead of calling reset_cursor at this flag’s setting in main 389, it only resets the cursor of the num_display_terminal’s x and y positions
+
+Who: Simon
+What: random pfault and opcode errors happen when executing specifically fish, pingpong, and another string of actions on the third terminal. also, cat rtc not pausing correctly
+When: Monday 12/10
+How: flanked more sections with cli sti and fixed how tss.esp0 value is calculated. also, more cli sti flanking and a different manipulation of data to formulate rtc_open file-scope values 129
+
+Who: Dhruv
+What: system linkage asm and new paging and fs read comments misleading
+When: Monday 12/10
+How: fixed comments
+
+_________________________
+3.5 DEADLINE MONDAY 12/10
+_________________________
+___________________________
+MP3 FINAL DEMO MONDAY 12/10
+___________________________
+
